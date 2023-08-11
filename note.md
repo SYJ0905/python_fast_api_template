@@ -2,12 +2,7 @@
 
 $ pip install virtualenv
 
-# 在project_folder裡面建立一個叫env的虛擬環境
-
-$ cd project_folder
 $ virtualenv env
-
-# 現在應該會有個env/的folder
 
 # 進入env/這個虛擬環境
 
@@ -41,7 +36,7 @@ Flask==0.12.2
 
 $ git pull
 $ virtualenv env  # 建立env
-$ source env/bin/activate
+$ source env/Scripts/activate
 
 (env) $ pip freeze
 
