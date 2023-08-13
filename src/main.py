@@ -1,26 +1,30 @@
-from typing import Union
-
+# from typing import Union
 from fastapi import FastAPI
-from pydantic import BaseModel
 
-# from src.config import app_config
+# from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+
+from src.config import app_config
 
 from src.module.resource.hello import router
 
 
 def create_app(config_name="develop"):
     app = FastAPI()
+    origins = ["*"]
+    app.add_middleware(CORSMiddleware, allow_origins=origins)
 
     # class Item(BaseModel):
     #     name: str
     #     price: float
     #     is_offer: Union[bool, None] = None
 
-    # @app.get("/info")
-    # async def info():
-    #     return {
-    #         "app_name": app_config[config_name].SQLALCHEMY_DATABASE_URI,
-    #     }
+    @app.get("/info")
+    async def info():
+        return {
+            "app_env": config_name,
+            "app_db_name": app_config[config_name].SQLALCHEMY_DATABASE_URI,
+        }
 
     # @app.get("/items/{item_id}")
     # def read_item(item_id: int, q: Union[str, None] = None):
@@ -40,3 +44,7 @@ def create_app(config_name="develop"):
 # pip install 'uvicorn[standard]'
 # $env:DATABASE_URL="mysql+pymysql://root:MySQL0905@localhost:3306/message_board"
 # uvicorn src.main:create_app --reload
+
+
+# gunicorn -w 4 --bind=0.0.0.0:8000 -k uvicorn.workers.UvicornWorker src.wsgi:application
+# gunicorn -w 4 --bind=0.0.0.0:8000 src.wsgi:application

@@ -24,8 +24,6 @@ class ProductionConfig(Config):
     pass
 
 
-settings = Config()
-
 app_config = {
     "testing": TestingConfig(),
     "develop": DevelopConfig(),
