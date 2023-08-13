@@ -21,13 +21,13 @@ $ deactivate
 (env) $ pip freeze
 Flask==0.12.2
 
-# 保存現在的environment裡所有packages的version到requirement.txt
+# 保存現在的environment裡所有packages的version到requirements.txt
 
-(env) $ pip freeze > requirement.txt
+(env) $ pip freeze > requirements.txt
 
-# 看看requirement.txt
+# 看看requirements.txt
 
-(env) $ cat requirement.txt
+(env) $ cat requirements.txt
 Flask==0.12.2
 
 # -------------
@@ -42,7 +42,7 @@ $ source env/Scripts/activate
 
 # 沒有package
 
-(env) $ pip install -r requirement.txt  # 裝回packages
+(env) $ pip install -r requirements.txt  # 裝回packages
 
 $ pip freeze
 Flask==0.12.2
