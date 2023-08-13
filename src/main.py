@@ -11,8 +11,13 @@ from src.module.resource.hello import router
 
 def create_app(config_name="develop"):
     app = FastAPI()
-    origins = ["*"]
-    app.add_middleware(CORSMiddleware, allow_origins=origins)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     # class Item(BaseModel):
     #     name: str
