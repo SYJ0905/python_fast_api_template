@@ -20,7 +20,12 @@ class Item(BaseModel):
     tax: float | None = None
 
 
-@router.put("/test/{item_id}")
+@router.post(
+    "/test/{item_id}",
+    tags=["test"],
+    summary="摘要",
+    # description="描述",
+)
 async def create_item(
     item_id: int,
     item: Item,
@@ -36,6 +41,11 @@ async def create_item(
     # q: str | None = Query(min_length=3, max_length=10),
     # q: str | None = Query(default=None, min_length=3, max_length=10),
 ):
+    """
+    Create an item with all the information:
+
+    - **測試**: 敘述
+    """
     return {
         "item_id": item_id,
         "item": item.model_dump(),
