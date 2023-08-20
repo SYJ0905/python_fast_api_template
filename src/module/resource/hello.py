@@ -31,7 +31,7 @@ async def create_item(
     item: Item,
     needy: str,
     limit: int | None = 10,
-    q: str
+    query: str
     | None = Query(
         default=None,
         title="Query title",
@@ -51,6 +51,6 @@ async def create_item(
         "item": item.model_dump(),
         "limit": limit,
         "needy": needy,
-        "q": q,
+        "query": query,
         **item.model_dump(),
     }
