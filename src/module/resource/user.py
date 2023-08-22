@@ -1,5 +1,5 @@
 import uuid
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from src.database import get_db
 from src.model.user import User as UserModel
@@ -43,6 +43,13 @@ def create_user(user_data: UserCreate, db_session: Session = Depends(get_db)):
     註冊使用者
     """
 
+    if not user_data.username:
+        raise HTTPException(status_code=status.HTTP_200_OK, detail="用戶名稱不得為空")
+    if not user_data.email:
+        raise HTTPException(status_code=status.HTTP_200_OK, detail="電子郵件不得為空")
+    if not user_data.password:
+        raise HTTPException(status_code=status.HTTP_200_OK, detail="密碼不得為空")
+
     email = user_data.email
 
     user = UserModel.get_by_user_email(email, db_session)
@@ -66,7 +73,10 @@ def create_user(user_data: UserCreate, db_session: Session = Depends(get_db)):
         db_session=db_session,
     )
 
-    password = PasswordModel(user_id=user.user_id, db_session=db_session)
+    password = PasswordModel(
+        user_id=user.user_id,
+        db_session=db_session,
+    )
     password.set_password(user_data.password)
 
     user.add()
@@ -87,6 +97,13 @@ def update_user(
     """
     更新使用者資料
     """
+
+    if not user_data.user_id:
+        raise HTTPException(status_code=status.HTTP_200_OK, detail="用戶編號不得為空")
+    if not user_data.username:
+        raise HTTPException(status_code=status.HTTP_200_OK, detail="用戶名稱不得為空")
+    if not user_data.email:
+        raise HTTPException(status_code=status.HTTP_200_OK, detail="電子郵件不得為空")
 
     existing_user = UserModel.get_by_user_id(user_id, db_session)
 

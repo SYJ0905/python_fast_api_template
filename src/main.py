@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from src.config import app_config
 from src.database import engine, Base
@@ -13,6 +14,21 @@ def create_app(config_name="develop"):
 
     Base.metadata.create_all(bind=engine)
     app = FastAPI()
+
+    @app.exception_handler(HTTPException)
+    async def http_exception_handler(request, exc):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"code": "0", "data": None, "message": exc.detail},
+        )
+
+    @app.exception_handler(Exception)
+    async def generic_exception_handler(request, exc):
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"code": "0", "data": None, "message": "內部伺服器錯誤"},
+        )
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
