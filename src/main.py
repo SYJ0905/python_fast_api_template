@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from src.config import app_config
@@ -17,9 +18,34 @@ def create_app(config_name="develop"):
 
     @app.exception_handler(HTTPException)
     async def http_exception_handler(request, exc):
+        """
+        攔截欄位不得為空
+        """
+
         return JSONResponse(
             status_code=exc.status_code,
             content={"code": "0", "data": None, "message": exc.detail},
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(
+        request: Request, exc: RequestValidationError
+    ):
+        """
+        攔截欄位缺項 or 錯誤類型
+        """
+
+        detail = exc.errors()
+        error_messages = [f"{error['loc'][-1]} {error['msg']}" for error in detail]
+        error_message = ", ".join(error_messages)
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={
+                "code": "0",
+                "data": None,
+                "detail": exc.errors(),
+                "message": error_message,
+            },
         )
 
     @app.exception_handler(Exception)
