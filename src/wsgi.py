@@ -3,11 +3,11 @@ import sys
 
 sys.path.insert(0, os.getcwd())
 
-from src.main import create_app
+from src.main import app
 
 # from src import create_app, db
 
 
-application = create_app(config_name="production")
+application = app
 # with application.app_context():
 #     db.create_all()

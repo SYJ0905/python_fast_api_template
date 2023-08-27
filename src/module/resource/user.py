@@ -2,6 +2,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from src.database import get_db
+from src.module.resource.auth import get_current_active_user
 from src.model.user import User as UserModel
 from src.model.user import Password as PasswordModel
 from src.schemas.user import UserCreate, UserBase
@@ -10,7 +11,9 @@ router = APIRouter()
 
 
 @router.get("/users")
-def user_list(db_session: Session = Depends(get_db)):
+def user_list(
+    current_user=Depends(get_current_active_user), db_session: Session = Depends(get_db)
+):
     """
     取得使用者列表
     """
@@ -24,17 +27,21 @@ def user_list(db_session: Session = Depends(get_db)):
 
 
 @router.get("/user/{user_id}")
-def get_user(user_id: str, db_session: Session = Depends(get_db)):
+def get_user(
+    user_id: str,
+    current_user=Depends(get_current_active_user),
+    db_session: Session = Depends(get_db),
+):
     """
     取得使用者資料
     """
 
     user = UserModel.get_by_user_id(user_id, db_session)
 
-    if user:
-        return {"code": "1", "data": user.to_dict(), "message": "查詢用戶資料成功"}
+    if not user:
+        return {"code": "0", "data": None, "message": "用戶不存在"}
 
-    return {"code": "0", "data": None, "message": "用戶不存在"}
+    return {"code": "1", "data": user.to_dict(), "message": "查詢用戶資料成功"}
 
 
 @router.post("/user")
@@ -92,7 +99,10 @@ def create_user(user_data: UserCreate, db_session: Session = Depends(get_db)):
 
 @router.put("/user/{user_id}")
 def update_user(
-    user_id: str, user_data: UserBase, db_session: Session = Depends(get_db)
+    user_id: str,
+    user_data: UserBase,
+    current_user=Depends(get_current_active_user),
+    db_session: Session = Depends(get_db),
 ):
     """
     更新使用者資料
@@ -107,50 +117,54 @@ def update_user(
 
     existing_user = UserModel.get_by_user_id(user_id, db_session)
 
-    if existing_user:
-        existing_user.age = user_data.age
-        existing_user.update()
-
+    if not existing_user:
         user_list_data = [
             user.to_dict() for user in UserModel.get_user_list(db_session)
         ]
         return {
-            "code": "1",
+            "code": "0",
             "data": user_list_data,
-            "message": "更新用戶成功",
+            "message": "用戶不存在",
         }
+
+    existing_user.age = user_data.age
+    existing_user.update()
 
     user_list_data = [user.to_dict() for user in UserModel.get_user_list(db_session)]
     return {
-        "code": "0",
+        "code": "1",
         "data": user_list_data,
-        "message": "用戶不存在",
+        "message": "更新用戶成功",
     }
 
 
 @router.delete("/user/{user_id}")
-def delete_user(user_id: str, db_session: Session = Depends(get_db)):
+def delete_user(
+    user_id: str,
+    current_user=Depends(get_current_active_user),
+    db_session: Session = Depends(get_db),
+):
     """
     刪除使用者資料
     """
 
     existing_user = UserModel.get_by_user_id(user_id, db_session)
 
-    if existing_user:
-        existing_user.delete()
-
+    if not existing_user:
         user_list_data = [
             user.to_dict() for user in UserModel.get_user_list(db_session)
         ]
         return {
-            "code": "1",
+            "code": "0",
             "data": user_list_data,
-            "message": "刪除用戶成功",
+            "message": "用戶不存在",
         }
+
+    existing_user.delete()
 
     user_list_data = [user.to_dict() for user in UserModel.get_user_list(db_session)]
     return {
-        "code": "0",
+        "code": "1",
         "data": user_list_data,
-        "message": "用戶不存在",
+        "message": "刪除用戶成功",
     }

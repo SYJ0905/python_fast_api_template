@@ -1,9 +1,7 @@
 from sqlalchemy import Column, String, Integer, ForeignKey
-from sqlalchemy.orm import Session
 from passlib.context import CryptContext
+from sqlalchemy.orm import Session
 from src.model.base import BaseCrud
-
-# from sqlalchemy.orm import relationship
 
 
 class User(BaseCrud):

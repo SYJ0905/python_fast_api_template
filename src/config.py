@@ -1,7 +1,7 @@
 import os
 from pydantic_settings import BaseSettings
 
-# from datetime import timedelta
+app_env = "develop"
 
 
 class Config(BaseSettings):
@@ -13,8 +13,9 @@ class Config(BaseSettings):
     """
 
     SQLALCHEMY_DATABASE_URL: str | None = os.environ.get("DATABASE_URL")
-    # JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "MESSAGE_BOARD")
-    # JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    SECRET_KEY: str = os.environ.get("SECRET_KEY", "MESSAGE_BOARD")
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
 
 class TestingConfig(Config):
