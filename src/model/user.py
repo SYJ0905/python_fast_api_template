@@ -16,7 +16,7 @@ class User(BaseCrud):
     age = Column(Integer)
     email = Column(String(64), unique=True)
 
-    db_session = None  # Default database session
+    db_session = None
 
     def __init__(self, db_session: Session, **kwargs):
         super().__init__(db_session)
@@ -87,7 +87,7 @@ class Password(BaseCrud):
     )
     password_hash = Column(String(128))
 
-    db_session = None  # database session
+    db_session = None
 
     def __init__(self, db_session: Session, **kwargs):
         super().__init__(db_session)

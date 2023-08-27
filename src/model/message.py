@@ -18,7 +18,7 @@ class Message(BaseCrud):
         "Reply", back_populates="message", cascade="all, delete-orphan"
     )
 
-    db_session = None  # Default database session
+    db_session = None
 
     def __init__(self, db_session: Session, **kwargs):
         super().__init__(db_session)
@@ -86,7 +86,7 @@ class Reply(BaseCrud):
     )
     message = relationship("Message", back_populates="replies")
 
-    db_session = None  # Default database session
+    db_session = None
 
     def __init__(self, db_session: Session, **kwargs):
         super().__init__(db_session)
