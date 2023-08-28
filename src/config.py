@@ -1,7 +1,7 @@
 import os
 from pydantic_settings import BaseSettings
 
-app_env = "production"
+app_env = "develop"
 
 
 class Config(BaseSettings):
