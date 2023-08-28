@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from src.config import app_env, app_config
 
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:MySQL0905@localhost:3306/message_board"
+SQLALCHEMY_DATABASE_URL = app_config[app_env].SQLALCHEMY_DATABASE_URL
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

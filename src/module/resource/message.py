@@ -41,14 +41,12 @@ def create_message(
 
     if not message_data.content:
         raise HTTPException(status_code=status.HTTP_200_OK, detail="留言內容不得為空")
-    # if not message_data.create_account:
-    #     raise HTTPException(status_code=status.HTTP_200_OK, detail="留言者不得為空")
 
     message_id = str(uuid.uuid4()).replace("-", "")
     message = MessageModel(
         message_id=message_id,
         content=message_data.content,
-        # create_account=get_jwt_identity(),
+        create_account=current_user.user_id,
         db_session=db_session,
     )
 
@@ -73,16 +71,14 @@ def update_message(
 
     if not message_data.content:
         raise HTTPException(status_code=status.HTTP_200_OK, detail="留言內容不得為空")
-    # if not message_data.create_account:
-    #     raise HTTPException(status_code=status.HTTP_200_OK, detail="留言者不得為空")
 
     message = MessageModel.get_by_message_id(message_id, db_session)
 
     if not message:
         return {"code": "0", "data": None, "message": "留言不存在"}
 
-    # if message.create_account != get_jwt_identity():
-    #   return {"code": "0", "data": None, "message": "拒絕不同帳號更新留言"}
+    if message.create_account != current_user.user_id:
+        return {"code": "0", "data": None, "message": "拒絕不同帳號更新留言"}
 
     message.content = message_data.content
     message.update()
@@ -108,8 +104,8 @@ def delete_message(
     if not message:
         return {"code": "0", "data": None, "message": "留言不存在"}
 
-    # if message.create_account != get_jwt_identity():
-    #     return {"code": "0", "data": None, "message": "拒絕不同帳號刪除留言"}
+    if message.create_account != current_user.user_id:
+        return {"code": "0", "data": None, "message": "拒絕不同帳號刪除留言"}
 
     message.delete()
 
@@ -146,7 +142,7 @@ def create_reply(
         reply_id=str(uuid.uuid4()).replace("-", ""),
         message_id=message_id,
         content=reply_message_data.content,
-        # create_account=get_jwt_identity(),
+        create_account=current_user.user_id,
         message=message,
         db_session=db_session,
     )
@@ -175,8 +171,8 @@ def update_reply(
     if not reply_message_data.content:
         raise HTTPException(status_code=status.HTTP_200_OK, detail="回覆內容不得為空")
 
-    # if reply.create_account != get_jwt_identity():
-    #     return {"code": "0", "data": None, "message": "拒絕不同帳號更新回覆"}
+    if reply.create_account != current_user.user_id:
+        return {"code": "0", "data": None, "message": "拒絕不同帳號更新回覆"}
 
     reply.content = reply_message_data.content
     reply.update()
@@ -201,8 +197,8 @@ def delete_reply(
     if not reply:
         return {"code": "0", "data": None, "message": "回覆不存在"}
 
-    # if reply.create_account != get_jwt_identity():
-    #     return {"code": "0", "data": None, "message": "拒絕不同帳號刪除回覆"}
+    if reply.create_account != current_user.user_id:
+        return {"code": "0", "data": None, "message": "拒絕不同帳號刪除回覆"}
 
     reply.delete()
 

@@ -73,5 +73,5 @@ app.include_router(MessageRouter, tags=["message"])
 # pip install 'uvicorn[standard]'
 # $env:DATABASE_URL="mysql+pymysql://root:MySQL0905@localhost:3306/message_board"
 # uvicorn src.main:app --reload
-# gunicorn -w 4 --bind=0.0.0.0:8000 -k uvicorn.workers.UvicornWorker src.wsgi:application
-# gunicorn -w 4 --bind=0.0.0.0:8000 src.wsgi:application
+# gunicorn -w 4 --bind=0.0.0.0:8000 -k uvicorn.workers.UvicornWorker src.main:app
+# gunicorn -w 4 --bind=0.0.0.0:8000 src.main:app
