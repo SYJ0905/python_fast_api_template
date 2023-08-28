@@ -12,7 +12,7 @@ class Config(BaseSettings):
     It includes settings for the database URL.
     """
 
-    SQLALCHEMY_DATABASE_URL: str | None = os.environ.get("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URL: str = os.environ.get("DATABASE_URL")
     SECRET_KEY: str = os.environ.get("SECRET_KEY", "MESSAGE_BOARD")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
