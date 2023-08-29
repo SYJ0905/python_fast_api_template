@@ -201,6 +201,7 @@ def create_fake_user(db_session: Session = Depends(get_db)):
         fake_user_password_data.append(password)
 
     db_session.add_all(fake_user_data)
+    db_session.commit()
     db_session.add_all(fake_user_password_data)
     db_session.commit()
 
