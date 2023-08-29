@@ -181,7 +181,7 @@ def create_fake_user(db_session: Session = Depends(get_db)):
     fake_user_data = []
     fake_user_password_data = []
 
-    for _ in range(100000):
+    for _ in range(1000):
         user_id = str(uuid.uuid4()).replace("-", "")
         user = UserModel(
             user_id=user_id,
