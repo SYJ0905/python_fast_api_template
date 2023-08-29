@@ -46,13 +46,13 @@ class User(BaseCrud):
         cls.db_session = db_session
 
     @staticmethod
-    def get_user_list(db_session: Session):
+    def get_user_list(offset: int, limit: int, db_session: Session):
         """
         取得使用者列表
         """
 
         User.set_db_session(db_session)
-        return db_session.query(User).all()
+        return db_session.query(User).offset(offset).limit(limit).all()
 
     @staticmethod
     def get_by_user_id(user_id: str, db_session: Session):
