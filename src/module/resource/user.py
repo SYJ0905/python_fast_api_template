@@ -1,5 +1,6 @@
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, status
+import random
+from fastapi import APIRouter, Depends, HTTPException, status, Path
 from sqlalchemy.orm import Session
 from src.database import get_db
 from src.module.resource.auth import get_current_active_user
@@ -10,18 +11,33 @@ from src.schemas.user import UserCreate, UserBase
 router = APIRouter()
 
 
-@router.get("/users")
+@router.get("/users/{page}/{page_size}")
 def user_list(
-    current_user=Depends(get_current_active_user), db_session: Session = Depends(get_db)
+    page: int,
+    page_size: int,
+    current_user=Depends(get_current_active_user),
+    db_session: Session = Depends(get_db),
 ):
     """
     取得使用者列表
     """
 
-    user_list_data = [user.to_dict() for user in UserModel.get_user_list(db_session)]
+    offset = (page - 1) * page_size
+
+    user_list_data = [
+        user.to_dict()
+        for user in UserModel.get_user_list(
+            offset=offset, limit=page_size, db_session=db_session
+        )
+    ]
+
+    total_rows = db_session.query(UserModel).count()
     return {
         "code": "1",
-        "data": user_list_data,
+        "data": {
+            "items": user_list_data,
+            "rowcount": total_rows,
+        },
         "message": "查詢所有用戶成功",
     }
 
@@ -62,12 +78,9 @@ def create_user(user_data: UserCreate, db_session: Session = Depends(get_db)):
     user = UserModel.get_by_user_email(email, db_session)
 
     if user:
-        user_list_data = [
-            user.to_dict() for user in UserModel.get_user_list(db_session)
-        ]
         return {
             "code": "0",
-            "data": user_list_data,
+            "data": None,
             "message": "用戶已存在",
         }
 
@@ -89,10 +102,9 @@ def create_user(user_data: UserCreate, db_session: Session = Depends(get_db)):
     user.add()
     password.add()
 
-    user_list_data = [user.to_dict() for user in UserModel.get_user_list(db_session)]
     return {
         "code": "1",
-        "data": user_list_data,
+        "data": None,
         "message": "新增用戶成功",
     }
 
@@ -118,22 +130,18 @@ def update_user(
     existing_user = UserModel.get_by_user_id(user_id, db_session)
 
     if not existing_user:
-        user_list_data = [
-            user.to_dict() for user in UserModel.get_user_list(db_session)
-        ]
         return {
             "code": "0",
-            "data": user_list_data,
+            "data": None,
             "message": "用戶不存在",
         }
 
     existing_user.age = user_data.age
     existing_user.update()
 
-    user_list_data = [user.to_dict() for user in UserModel.get_user_list(db_session)]
     return {
         "code": "1",
-        "data": user_list_data,
+        "data": None,
         "message": "更新用戶成功",
     }
 
@@ -151,20 +159,47 @@ def delete_user(
     existing_user = UserModel.get_by_user_id(user_id, db_session)
 
     if not existing_user:
-        user_list_data = [
-            user.to_dict() for user in UserModel.get_user_list(db_session)
-        ]
         return {
             "code": "0",
-            "data": user_list_data,
+            "data": None,
             "message": "用戶不存在",
         }
 
     existing_user.delete()
-
-    user_list_data = [user.to_dict() for user in UserModel.get_user_list(db_session)]
     return {
         "code": "1",
-        "data": user_list_data,
+        "data": None,
         "message": "刪除用戶成功",
+    }
+
+
+@router.post("/faker")
+def create_user(db_session: Session = Depends(get_db)):
+    """
+    註冊大量假的使用者
+    """
+
+    for _ in range(10000000):
+        user_id = str(uuid.uuid4()).replace("-", "")
+        user = UserModel(
+            user_id=user_id,
+            username="fake_user_" + str(uuid.uuid4()).replace("-", "")[:8],
+            age=random.randint(18, 99),
+            email=f"fake_email_{uuid.uuid4().hex[:8]}@example.com",
+            db_session=db_session,
+        )
+
+        password = PasswordModel(
+            user_id=user.user_id,
+            db_session=db_session,
+        )
+        password.set_password("fake_password_" + str(uuid.uuid4()).replace("-", "")[:8])
+
+        user.add()
+        password.add()
+
+    return {
+        "code": "1",
+        "data": None,
+        "message": "新增用戶成功",
     }
