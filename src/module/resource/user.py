@@ -1,6 +1,6 @@
 import uuid
 import random
-from fastapi import APIRouter, Depends, HTTPException, status, Path
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from src.database import get_db
 from src.module.resource.auth import get_current_active_user
@@ -11,7 +11,7 @@ from src.schemas.user import UserCreate, UserBase
 router = APIRouter()
 
 
-@router.get("/users/{page}/{page_size}")
+@router.post("/users/{page}/{page_size}")
 def user_list(
     page: int,
     page_size: int,
