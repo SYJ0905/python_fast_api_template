@@ -174,14 +174,14 @@ def delete_user(
 
 
 @router.post("/faker")
-def create_fake_user(user_data: UserCreate, db_session: Session = Depends(get_db)):
+def create_fake_user(db_session: Session = Depends(get_db)):
     """
-    註冊大量假的使用者
+    註冊假的使用者
     """
     fake_user_data = []
     fake_user_password_data = []
 
-    for i in range(200):
+    for i in range(1):
         user_id = str(uuid.uuid4()).replace("-", "")
         user = UserModel(
             user_id=user_id,
@@ -195,7 +195,8 @@ def create_fake_user(user_data: UserCreate, db_session: Session = Depends(get_db
             user_id=user.user_id,
             db_session=db_session,
         )
-        password.set_password("fake_password_" + str(uuid.uuid4()).replace("-", "")[:8])
+        password.set_password(
+            "fake_password_" + str(uuid.uuid4()).replace("-", "")[:8])
 
         fake_user_data.append(user)
         fake_user_password_data.append(password)
