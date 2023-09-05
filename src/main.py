@@ -67,11 +67,14 @@ app.include_router(AuthRouter, tags=["auth"])
 app.include_router(UserRouter, tags=["users"])
 app.include_router(MessageRouter, tags=["message"])
 
-
-# pip install fastapi
-# pip install uvicorn
-# pip install 'uvicorn[standard]'
+# 預設本地 MySQL
 # $env:DATABASE_URL="mysql+pymysql://root:MySQL0905@localhost:3306/message_board"
-# uvicorn src.main:app --reload
+# uvicorn src.main:app --reload --port 8000
+
+# 指定 Docker MySQL
+# $env:DATABASE_URL="mysql+pymysql://root:MySQL0905@localhost:3000/message_board"
+# uvicorn src.main:app --reload --port 8001
+
+# 雲端部署
 # gunicorn -w 4 --bind=0.0.0.0:8000 -k uvicorn.workers.UvicornWorker src.main:app
 # gunicorn -w 4 --bind=0.0.0.0:8000 src.main:app

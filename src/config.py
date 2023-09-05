@@ -12,7 +12,7 @@ class Config(BaseSettings):
     It includes settings for the database URL.
     """
 
-    SQLALCHEMY_DATABASE_URL: str = os.environ.get("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URL: str = os.environ.get("DATABASE_URL", "127.0.0.1")
     SECRET_KEY: str = os.environ.get("SECRET_KEY", "MESSAGE_BOARD")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
@@ -34,10 +34,6 @@ class DevelopConfig(Config):
     This class inherits from the base `Config` class and overrides the
     database URL setting for the development environment.
     """
-
-    SQLALCHEMY_DATABASE_URL: str = (
-        "mysql+pymysql://root:MySQL0905@localhost:3306/message_board"
-    )
 
 
 class ProductionConfig(Config):
