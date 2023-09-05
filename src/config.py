@@ -1,7 +1,11 @@
 import os
 from pydantic_settings import BaseSettings
+from dotenv import load_dotenv
+from dotenv import dotenv_values
 
-app_env = "develop"
+load_dotenv()
+
+app_env = os.environ.get("APP_ENV")
 
 
 class Config(BaseSettings):
@@ -12,10 +16,12 @@ class Config(BaseSettings):
     It includes settings for the database URL.
     """
 
-    SQLALCHEMY_DATABASE_URL: str = os.environ.get("DATABASE_URL", "127.0.0.1")
-    SECRET_KEY: str = os.environ.get("SECRET_KEY", "MESSAGE_BOARD")
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    SQLALCHEMY_DATABASE_URL: str = os.environ.get("DATABASE_URL")
+    SECRET_KEY: str = os.environ.get("SECRET_KEY")
+    ALGORITHM: str = os.environ.get("ALGORITHM")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
+        os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES")
+    )
 
 
 class TestingConfig(Config):
@@ -50,3 +56,10 @@ app_config = {
     "develop": DevelopConfig(),
     "production": ProductionConfig(),
 }
+
+
+print(f"APP_ENV: {app_env}")
+print(f"SQLALCHEMY_DATABASE_URL: {app_config[app_env].SQLALCHEMY_DATABASE_URL}")
+print(f"SECRET_KEY: {app_config[app_env].SECRET_KEY}")
+print(f"ALGORITHM: {app_config[app_env].ALGORITHM}")
+print(f"ACCESS_TOKEN_EXPIRE_MINUTES: {app_config[app_env].ACCESS_TOKEN_EXPIRE_MINUTES}")
