@@ -1,0 +1,44 @@
+version: "3.8"
+
+services: # 容器
+  mysql-container: # 服务名字，这个名字也是内部 bridge网络可以使用的 DNS name
+    # build: ./db
+    image: syj0905/message_board_db_image
+    # image: message_board_db_image # 镜像的名字
+    # command: # 可选，如果设置，则会覆盖默认镜像里的 CMD命令
+    environment: # 可选，相当于 docker run里的 --env
+      - MYSQL_ROOT_PASSWORD=MySQL0905
+    volumes: # 可选，相当于docker run里的 -v
+      - mysql-data:/var/lib/mysql
+    networks: # 可选，相当于 docker run里的 --network
+      - message_board_network
+    hostname: customdbhost
+    ports: # 可选，相当于 docker run里的 -p
+      - 3000:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  message_boarad_api:
+    build: .
+    # image: syj0905/message_board_api
+    # image: message_board_api # 镜像的名字
+    depends_on:
+      - mysql-container
+    # command: # 可选，如果设置，则会覆盖默认镜像里的 CMD命令
+    # environment: # 可选，相当于 docker run里的 --env
+    # volumes: # 可选，相当于docker run里的 -v
+    networks: # 可选，相当于 docker run里的 --network
+      - message_board_network
+    hostname: customapihost
+    ports: # 可选，相当于 docker run里的 -p
+      - 8000:8000
+
+volumes: # 可选，相当于 docker volume create
+  mysql-data:
+    driver: local
+
+networks: # 可选，相当于 docker network create
+  message_board_network:
