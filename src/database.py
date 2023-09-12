@@ -1,4 +1,6 @@
 import redis
+import rq
+from rq import Queue
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -14,6 +16,16 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 redis_client = redis.Redis(host="localhost", port=6379, db=0)
+# 創建 Redis 佇列
+queue = Queue(connection=redis_client)
+
+
+# def test_task():
+#     print("測試任務已執行")
+
+
+# # 使用佇列執行測試任務
+# queue.enqueue(test_task)
 
 
 def get_db():

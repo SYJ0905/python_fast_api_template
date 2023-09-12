@@ -13,3 +13,8 @@ class UserCreate(BaseModel):
     age: int
     email: str
     password: str
+
+
+class PasswordCreate(BaseModel):
+    user_id: str
+    password_hash: str
