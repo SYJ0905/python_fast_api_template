@@ -66,7 +66,8 @@ class Message(BaseCrud):
 
         Message.set_db_session(db_session)
         return (
-            db_session.query(Message).filter(Message.message_id == message_id).first()
+            db_session.query(Message).filter(
+                Message.message_id == message_id).first()
         )
 
 

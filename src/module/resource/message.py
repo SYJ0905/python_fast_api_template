@@ -26,24 +26,16 @@ def message_list(
 
     # 尝试从Redis缓存中获取消息列表
     message_list_data = redis_client.get("message_list_data")
-    print("message_list_data 1 =>", message_list_data)
 
-    if message_list_data:
-        print(
-            "message_list_data 2 =>", message_list_data, json.loads(message_list_data)
-        )
+    if message_list_data is None:
         # 如果缓存中没有数据，则从数据库获取数据，并将其存储到Redis缓存中
         message_list_data = [
             message.to_dict() for message in MessageModel.get_message_list(db_session)
         ]
         redis_client.set("message_list_data", json.dumps(message_list_data))
+        return {"code": "1", "data": message_list_data, "message": "查詢所有留言成功"}
 
-    return {"code": "1", "data": message_list_data, "message": "查詢所有留言成功"}
-
-    # message_list_data = [
-    #     message.to_dict() for message in MessageModel.get_message_list(db_session)
-    # ]
-    # return {"code": "1", "data": message_list_data, "message": "查詢所有留言成功"}
+    return {"code": "1", "data": json.loads(message_list_data), "message": "查詢所有留言成功"}
 
 
 @router.post("/message")
@@ -145,7 +137,8 @@ def create_reply(
     message_id = reply_message_data.message_id
 
     if not message_id:
-        raise HTTPException(status_code=status.HTTP_200_OK, detail="指定留言編號不得為空")
+        raise HTTPException(status_code=status.HTTP_200_OK,
+                            detail="指定留言編號不得為空")
 
     if not reply_message_data.content:
         raise HTTPException(status_code=status.HTTP_200_OK, detail="回覆內容不得為空")
