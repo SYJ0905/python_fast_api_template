@@ -1,3 +1,4 @@
+import redis
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -10,6 +11,8 @@ engine = create_engine(url=SQLALCHEMY_DATABASE_URL, pool_size=10, max_overflow=2
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+redis_client = redis.Redis(host="localhost", port=6379, db=0)
 
 
 def get_db():

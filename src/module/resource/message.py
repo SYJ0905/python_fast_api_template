@@ -1,7 +1,8 @@
 import uuid
+import json
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from src.database import get_db
+from src.database import get_db, redis_client
 from src.module.resource.auth import get_current_active_user
 from src.model.message import Message as MessageModel
 from src.model.message import Reply as ReplyModel
@@ -23,10 +24,26 @@ def message_list(
     取得所有留言列表
     """
 
-    message_list_data = [
-        message.to_dict() for message in MessageModel.get_message_list(db_session)
-    ]
+    # 尝试从Redis缓存中获取消息列表
+    message_list_data = redis_client.get("message_list_data")
+    print("message_list_data 1 =>", message_list_data)
+
+    if message_list_data:
+        print(
+            "message_list_data 2 =>", message_list_data, json.loads(message_list_data)
+        )
+        # 如果缓存中没有数据，则从数据库获取数据，并将其存储到Redis缓存中
+        message_list_data = [
+            message.to_dict() for message in MessageModel.get_message_list(db_session)
+        ]
+        redis_client.set("message_list_data", json.dumps(message_list_data))
+
     return {"code": "1", "data": message_list_data, "message": "查詢所有留言成功"}
+
+    # message_list_data = [
+    #     message.to_dict() for message in MessageModel.get_message_list(db_session)
+    # ]
+    # return {"code": "1", "data": message_list_data, "message": "查詢所有留言成功"}
 
 
 @router.post("/message")
@@ -163,6 +180,10 @@ def update_reply(
     current_user=Depends(get_current_active_user),
     db_session: Session = Depends(get_db),
 ):
+    """
+    更新回覆
+    """
+
     reply = ReplyModel.get_by_reply_id(reply_id, db_session)
 
     if not reply:
@@ -192,6 +213,10 @@ def delete_reply(
     current_user=Depends(get_current_active_user),
     db_session: Session = Depends(get_db),
 ):
+    """
+    刪除回覆
+    """
+
     reply = ReplyModel.get_by_reply_id(reply_id, db_session)
 
     if not reply:

@@ -72,7 +72,6 @@ app.include_router(MessageRouter, tags=["message"])
 # uvicorn src.main:app --reload --port 8000
 
 # 指定 Docker MySQL
-# $env:DATABASE_URL="mysql+pymysql://root:MySQL0905@localhost:3000/message_board"
 # uvicorn src.main:app --reload --port 8001
 
 # 雲端部署
