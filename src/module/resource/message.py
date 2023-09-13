@@ -35,7 +35,7 @@ def message_list(
         redis_client.set("message_list_data", json.dumps(message_list_data))
         return {"code": "1", "data": message_list_data, "message": "查詢所有留言成功"}
 
-    return {"code": "1", "data": json.loads(message_list_data), "message": "查詢所有留言成功"}
+    return {"code": "1 redis", "data": json.loads(message_list_data), "message": "查詢所有留言成功"}
 
 
 @router.post("/message")
