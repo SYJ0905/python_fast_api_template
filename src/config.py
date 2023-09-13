@@ -21,6 +21,8 @@ class Config(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
         os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES")
     )
+    REDIS_HOST: str = os.environ.get("REDIS_HOST")
+    REDIS_PORT: str = os.environ.get("REDIS_PORT")
 
 
 class TestingConfig(Config):
@@ -58,7 +60,11 @@ app_config = {
 
 
 print(f"APP_ENV: {app_env}")
-print(f"SQLALCHEMY_DATABASE_URL: {app_config[app_env].SQLALCHEMY_DATABASE_URL}")
+print(
+    f"SQLALCHEMY_DATABASE_URL: {app_config[app_env].SQLALCHEMY_DATABASE_URL}")
 print(f"SECRET_KEY: {app_config[app_env].SECRET_KEY}")
 print(f"ALGORITHM: {app_config[app_env].ALGORITHM}")
-print(f"ACCESS_TOKEN_EXPIRE_MINUTES: {app_config[app_env].ACCESS_TOKEN_EXPIRE_MINUTES}")
+print(
+    f"ACCESS_TOKEN_EXPIRE_MINUTES: {app_config[app_env].ACCESS_TOKEN_EXPIRE_MINUTES}")
+print(f"REDIS_HOST: {app_config[app_env].REDIS_HOST}")
+print(f"REDIS_PORT: {app_config[app_env].REDIS_PORT}")

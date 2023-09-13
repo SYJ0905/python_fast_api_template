@@ -15,7 +15,8 @@ engine = create_engine(url=SQLALCHEMY_DATABASE_URL,
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-redis_client = redis.Redis(host="localhost", port=6379, db=0)
+redis_client = redis.Redis(
+    host=app_config[app_env].REDIS_HOST, port=app_config[app_env].REDIS_PORT, db=0)
 # 創建 Redis 佇列
 queue = Queue(connection=redis_client)
 

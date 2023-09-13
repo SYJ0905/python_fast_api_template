@@ -2,7 +2,7 @@ import uuid
 import random
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from plyer import notification
+# from plyer import notification
 from src.database import get_db
 from src.module.resource.auth import get_current_active_user
 from src.model.user import User as UserModel
@@ -104,11 +104,11 @@ def create_user(user_data: UserCreate, db_session: Session = Depends(get_db)):
     password.add()
 
     # 發送通知
-    notification.notify(
-        title="新用戶創建",
-        message=f"用戶 {user.username} 已成功創建。",
-        app_name="您的應用程式名稱",
-    )
+    # notification.notify(
+    #     title="新用戶創建",
+    #     message=f"用戶 {user.username} 已成功創建。",
+    #     app_name="您的應用程式名稱",
+    # )
 
     return {
         "code": "1",
@@ -216,14 +216,14 @@ def create_fake_user(db_session: Session = Depends(get_db)):
     db_session.commit()
 
     # 提取 username 並生成通知消息
-    usernames = [user.username for user in fake_user_data]
-    notification_message = f"用戶 {', '.join(usernames)} 已成功創建。"
+    # usernames = [user.username for user in fake_user_data]
+    # notification_message = f"用戶 {', '.join(usernames)} 已成功創建。"
 
     # 發送通知
-    notification.notify(
-        title="新用戶創建",
-        message=notification_message,
-    )
+    # notification.notify(
+    #     title="新用戶創建",
+    #     message=notification_message,
+    # )
 
     return {
         "code": "1",
