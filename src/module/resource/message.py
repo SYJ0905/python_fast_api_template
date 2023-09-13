@@ -27,7 +27,7 @@ def message_list(
     # 尝试从Redis缓存中获取消息列表
     message_list_data = redis_client.get("message_list_data")
 
-    if message_list_data is None:
+    if message_list_data is None or message_list_data == b'[]':
         # 如果缓存中没有数据，则从数据库获取数据，并将其存储到Redis缓存中
         message_list_data = [
             message.to_dict() for message in MessageModel.get_message_list(db_session)
@@ -64,6 +64,9 @@ def create_message(
     message_list_data = [
         message.to_dict() for message in MessageModel.get_message_list(db_session)
     ]
+
+    redis_client.set("message_list_data", json.dumps(message_list_data))
+
     return {"code": "1", "data": message_list_data, "message": "新增留言成功"}
 
 
@@ -95,6 +98,9 @@ def update_message(
     message_list_data = [
         message.to_dict() for message in MessageModel.get_message_list(db_session)
     ]
+
+    redis_client.set("message_list_data", json.dumps(message_list_data))
+
     return {"code": "1", "data": message_list_data, "message": "更新留言成功"}
 
 
@@ -121,6 +127,9 @@ def delete_message(
     message_list_data = [
         message.to_dict() for message in MessageModel.get_message_list(db_session)
     ]
+
+    redis_client.set("message_list_data", json.dumps(message_list_data))
+
     return {"code": "1", "data": message_list_data, "message": "刪除留言成功"}
 
 
