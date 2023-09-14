@@ -20,7 +20,7 @@ services:
     hostname: customdbhost
     ports:
       # 可选，相当于 docker run里的 -p
-      - 3000:3306
+      - 4000:3306
     # 容器
   redis-container:
     image: redis:latest
