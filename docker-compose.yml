@@ -2,10 +2,10 @@ version: "3.8"
 
 services:
   # 容器
-  mysql-container:
+  message_board_mysql:
     # 服务名字，这个名字也是内部 bridge网络可以使用的 DNS name
-    # build: ./db
-    image: syj0905/message_board_db_image
+    build: ./db
+    # image: syj0905/message_board_db_image
     # image: message_board_db_image # 镜像的名字
     # command: # 可选，如果设置，则会覆盖默认镜像里的 CMD命令
     environment:
@@ -17,31 +17,31 @@ services:
     networks:
       # 可选，相当于 docker run里的 --network
       - message_board_network
-    hostname: customdbhost
+    hostname: message_board_mysql
     ports:
       # 可选，相当于 docker run里的 -p
       - 4000:3306
     # 容器
-  redis-container:
+  message_board_redis:
     image: redis:latest
     networks:
       - message_board_network
-    hostname: customredishost
+    hostname: message_board_redis
     ports:
       - 6300:6379
 
-  message_boarad_api:
+  message_board_api:
     build: .
     # image: syj0905/message_board_api
     depends_on:
-      - mysql-container
+      - message_board_mysql
     # command: # 可选，如果设置，则会覆盖默认镜像里的 CMD命令
     # environment: # 可选，相当于 docker run里的 --env
     # volumes: # 可选，相当于docker run里的 -v
     networks:
       # 可选，相当于 docker run里的 --network
       - message_board_network
-    hostname: customapihost
+    hostname: message_board_api
     ports:
       # 可选，相当于 docker run里的 -p
       - 8000:8000

@@ -14,11 +14,11 @@ COPY ./src /app/src
 
 # 定義環境變數
 ENV APP_ENV="develop"
-ENV DATABASE_URL="mysql+pymysql://root:MySQL0905@customdbhost:3306/message_board"
+ENV DATABASE_URL="mysql+pymysql://root:MySQL0905@message_board_mysql:3306/message_board"
 ENV SECRET_KEY="MESSAGE_BOARD"
 ENV ALGORITHM="HS256"
 ENV ACCESS_TOKEN_EXPIRE_MINUTES="30"
-ENV REDIS_HOST="customredishost"
+ENV REDIS_HOST="message_board_redis"
 ENV REDIS_PORT="6379"
 
 # 暴露 FastAPI 的監聽端口 (預設為8000)
