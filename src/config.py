@@ -2,7 +2,8 @@ import os
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
+load_dotenv(".env.local")
 
 app_env = os.environ.get("APP_ENV")
 
@@ -60,11 +61,9 @@ app_config = {
 
 
 print(f"APP_ENV: {app_env}")
-print(
-    f"SQLALCHEMY_DATABASE_URL: {app_config[app_env].SQLALCHEMY_DATABASE_URL}")
+print(f"SQLALCHEMY_DATABASE_URL: {app_config[app_env].SQLALCHEMY_DATABASE_URL}")
 print(f"SECRET_KEY: {app_config[app_env].SECRET_KEY}")
 print(f"ALGORITHM: {app_config[app_env].ALGORITHM}")
-print(
-    f"ACCESS_TOKEN_EXPIRE_MINUTES: {app_config[app_env].ACCESS_TOKEN_EXPIRE_MINUTES}")
+print(f"ACCESS_TOKEN_EXPIRE_MINUTES: {app_config[app_env].ACCESS_TOKEN_EXPIRE_MINUTES}")
 print(f"REDIS_HOST: {app_config[app_env].REDIS_HOST}")
 print(f"REDIS_PORT: {app_config[app_env].REDIS_PORT}")

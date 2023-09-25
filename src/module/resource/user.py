@@ -2,6 +2,7 @@ import uuid
 import random
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+
 # from plyer import notification
 from src.database import get_db
 from src.module.resource.auth import get_current_active_user
@@ -203,8 +204,7 @@ def create_fake_user(db_session: Session = Depends(get_db)):
             user_id=user.user_id,
             db_session=db_session,
         )
-        password.set_password(
-            "fake_password_" + str(uuid.uuid4()).replace("-", "")[:8])
+        password.set_password("fake_password_" + str(uuid.uuid4()).replace("-", "")[:8])
 
         fake_user_data.append(user)
         fake_user_password_data.append(password)
