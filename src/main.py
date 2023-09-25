@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from src.database import engine, Base
+from src.module.resource.main import router as mainRouter
 from src.module.resource.auth import router as AuthRouter
 from src.module.resource.user import router as UserRouter
 from src.module.resource.message import router as MessageRouter
@@ -63,6 +64,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(mainRouter, tags=["hello"])
 app.include_router(AuthRouter, tags=["auth"])
 app.include_router(UserRouter, tags=["users"])
 app.include_router(MessageRouter, tags=["message"])
