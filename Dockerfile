@@ -4,6 +4,9 @@ FROM python:3.10.11-slim
 # 設定工作目錄
 WORKDIR /app
 
+# 安裝需要的套件
+RUN apt-get update && apt-get install -y curl
+
 # 複製必要的檔案到工作目錄
 COPY ./requirements.txt /app/requirements.txt
 # 安裝依賴項
@@ -17,6 +20,9 @@ COPY .env /app/
 
 # 暴露 FastAPI 的監聽端口 (預設為8000)
 EXPOSE 8000
+
+# HEALTHCHECK --interval=30s --timeout=10s \
+#     CMD curl -f http://localhost:8000/ || exit 1
 
 # 啟動 FastAPI 應用程式
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0"]

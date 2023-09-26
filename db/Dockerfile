@@ -10,5 +10,8 @@ COPY init.sql /docker-entrypoint-initdb.d/
 # ENV MYSQL_PASSWORD=mypassword
 # ENV MYSQL_DATABASE=mydatabase
 
+# HEALTHCHECK --interval=30s --timeout=10s \
+#     CMD mysqladmin ping -h localhost || exit 1
+
 # 啟動MySQL服務並執行初始化SQL腳本
 CMD ["docker-entrypoint.sh", "mysqld"]

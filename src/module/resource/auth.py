@@ -64,7 +64,7 @@ async def get_current_active_user(current_user=Depends(get_current_user)):
     return current_user
 
 
-@router.get("/users/me/")
+@router.get("/users/me")
 async def read_users_me(current_user=Depends(get_current_active_user)):
     return {
         "code": "1",
